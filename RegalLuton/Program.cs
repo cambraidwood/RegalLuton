@@ -1,6 +1,7 @@
 ﻿using Common.Model;
 using Microsoft.Extensions.DependencyInjection;
 using RegalLuton.Common.Interface;
+using RegalLuton.Common.Model;
 using RegalLuton.Service;
 using System;
 using System.IO;
@@ -16,32 +17,28 @@ namespace RegalLuton
             // of the service classes
 
             var serviceProvider = new ServiceCollection()
-                .AddSingleton<ICSVReader, CSVReaderService>()
+                .AddSingleton<IFileSystem, FileSystemService>()
                 .AddSingleton<ILogger, LoggerService>()
                 .AddSingleton<ICustomerMapper, CustomerMapperService>()
+                .AddSingleton<ILetterGenerator, LetterGeneratorService>()
+                .AddSingleton<IConfigurationFile, ConfigurationFileService>()
                 .BuildServiceProvider();
 
-            // locate a service that implements the CSV Reader interface ...
+            // get services ...
 
-            var reader = serviceProvider.GetService<ICSVReader>();
+            var generator = serviceProvider.GetService<ILetterGenerator>();
             var logger = serviceProvider.GetService<ILogger>();
+            var config = serviceProvider.GetService<IConfigurationFile>();
 
             try
             {
-                string path = Directory.GetCurrentDirectory();
-                string filename = @"..\..\..\Resources\Input\customer.csv";
-                string fullPath = Path.GetFullPath(Path.Combine(path, filename));
+                GenerateModel model = new GenerateModel();
 
-                if (File.Exists(fullPath))
-                {
-                    var data = reader.Read(fullPath);
+                model.DataFileName = config.GetString("DataFileName");
+                model.TemplateFileName = config.GetString("TemplateFileName");
+                model.OutputFolder = config.GetString("OutputFolder");
 
-                    foreach (Customer c in data)
-                    {
-                        logger.Log(c?.ToString());
-                    }
-
-                }
+                generator.Write(generator.Process(model));
             }
             catch (Exception e)
             {

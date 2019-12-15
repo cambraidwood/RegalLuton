@@ -7,6 +7,6 @@ namespace RegalLuton.Common.Interface
 {
     public interface ICustomerMapper
     {
-        public Customer Map(string csvLine);
+        public CustomerModel Map(string csvLine);
     }
 }

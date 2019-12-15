@@ -9,7 +9,7 @@ namespace RegalLuton.Service
     {
         public void Log(string message)
         {
-            Console.WriteLine(string.Concat("ooh, we logged something ...", message));
+            Console.WriteLine(string.Concat(System.Environment.NewLine, "logged ... ", message));
         }
     }
 }

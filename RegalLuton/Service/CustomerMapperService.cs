@@ -9,35 +9,53 @@ namespace RegalLuton.Service
     public class CustomerMapperService : ICustomerMapper
     {
 
-        private readonly ILogger _logger;
+        private readonly ILogger logger;
 
         public CustomerMapperService(ILogger logger)
         {
-            _logger = logger;
+            this.logger = logger;
         }
 
-        public Customer Map(string csvLine)
+        public CustomerModel Map(string csvLine)
         {
             string[] values = csvLine.Split(',');
 
-            Customer customer = null;
+            CustomerModel customer = null;
 
-            if (values.Length == 8)
+            if (values.Length == 7)
             {
+                
+                try
+                {
+                    string title = values[1];
+                    string firstName = values[2];
+                    string surname = values[3];
+                    decimal payoutAmount = Convert.ToDecimal(values[5]);
+                    decimal annualPremium = Convert.ToDecimal(values[6]);
 
-                customer = new Customer();
+                    customer = new CustomerModel(payoutAmount, annualPremium)
+                    {
+                        Id = Convert.ToInt32(values[0]),
+                        Title = title,
+                        FirstName = firstName,
+                        Surname = surname,
+                        ProductName = values[4],
+                        TitleFullName = string.Concat(title, " ", firstName, " ", surname),
+                        TitleSurname = string.Concat(title, " ", surname)
+                    };
+                }
+                catch (Exception e)
+                {
 
-                customer.Id = Convert.ToInt32(values[0]);
-                customer.Title = values[1];
-                customer.FirstName = values[2];
-                customer.Surname = values[3];
-                customer.ProductName = values[4];
-                customer.PayoutAmount = Convert.ToDecimal(values[5]);
-                customer.AnnualPremium = Convert.ToDecimal(values[6]);
+                    customer = null;
+
+                    this.logger.Log(string.Concat("Data conversion error : ", string.Join(", ", values)));
+                }
+
             }
             else
             {
-                _logger.Log("Data issue");
+                this.logger.Log(string.Concat("Unexpected data error : ", string.Join(", ", values)));
             }
 
             return customer;
