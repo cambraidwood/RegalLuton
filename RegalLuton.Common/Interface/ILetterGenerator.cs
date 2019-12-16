@@ -9,7 +9,7 @@ namespace RegalLuton.Common.Interface
     public interface ILetterGenerator
     {
 
-        IEnumerable<LetterModel> Process(GenerateModel model);
+        List<LetterModel> Process(GenerateModel model);
 
         LetterModel Generate(CustomerModel model, string templateFileName, string outputFolder);
 

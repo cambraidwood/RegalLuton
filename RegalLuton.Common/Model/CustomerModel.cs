@@ -82,7 +82,7 @@ namespace Common.Model
                     {System.Environment.NewLine} {this.OtherMonthlyPaymentAmount.ToString("F2")}");
         }
 
-        private decimal CalculateCreditCharge(decimal annualPremium)
+        public decimal CalculateCreditCharge(decimal annualPremium)
         {
 
             // I am assuming that any fragment of a penny results in an upwards rounding
@@ -100,14 +100,14 @@ namespace Common.Model
             }
         }
 
-        private bool IsRoundPoundsPence(decimal actual)
+        public bool IsRoundPoundsPence(decimal actual)
         {
             decimal rounded = Math.Round(actual, 2, MidpointRounding.AwayFromZero);
 
             return (actual == rounded);
         }
 
-        private (decimal initialPayment, decimal otherPayment) CalculateMonthlyPayments(decimal total, decimal average)
+        public (decimal initialPayment, decimal otherPayment) CalculateMonthlyPayments(decimal total, decimal average)
         {
             decimal roundedDown = Math.Round(average, 2, MidpointRounding.ToZero);
 

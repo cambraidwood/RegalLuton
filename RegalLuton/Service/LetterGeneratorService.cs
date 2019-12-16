@@ -20,7 +20,7 @@ namespace RegalLuton.Service
             this.logger = logger;
         }
 
-        public IEnumerable<LetterModel> Process(GenerateModel model)
+        public List<LetterModel> Process(GenerateModel model)
         {
 
             List<LetterModel> results = new List<LetterModel>();
